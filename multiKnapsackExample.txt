@@ -1,0 +1,28 @@
+Testcases: 1
+Items: 9 
+Knapsacks: 2
+Capacity 1: 100
+Capacity 2: 150
+Item 1 price: 80
+Item 1 weight: 40
+Item 2 price: 20
+Item 2 weight: 10
+Item 3 price: 60
+Item 3 weight: 40
+Item 4 price: 40
+Item 4 weight: 30
+Item 5 price: 60
+Item 5 weight: 50
+Item 6 price: 60
+Item 6 weight: 50
+Item 7 price: 65
+Item 7 weight: 55
+Item 8 price: 25
+Item 8 weight: 25
+Item 9 price: 30
+Item 9 weight: 40
+
+Solution should be: 160 price and 90 weight in first, 160 price and 130 weight in second
+Total profit: 320
+
+GREEDY WORKS!
