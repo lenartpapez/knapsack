@@ -1,5 +1,7 @@
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Comparator;
+
 
 /**
  * Created by HAN on 2017. 9. 29..
@@ -54,20 +56,6 @@ public class MultiKnapsack {
 
         }
     }
-    void sortData(){
-        for(int i = 0; i < numProduct; i++){
-            for(int j = 1 ; j < numProduct-i; j++){
-                if(data[j-1][0]<data[j][0]){
-                    double[] temp = data[j];
-                    data[j] = data[j-1];
-                    data[j-1] = temp;
-                }
-            }
-        }
-        // for(int i = 0 ; i < numProduct; i++){
-        //     System.out.printf("%f, %f, %f\n", data[i][0], data[i][1], data[i][2]);
-        // }
-    }
 
     int[] greedy(double data[][], int num, int numKnapsack, int[] maxWei){
         // ret notates which product is in which knapsack. -1 means not included in any.
@@ -107,13 +95,24 @@ public class MultiKnapsack {
 
     public void playMultiKnapsackGame(){
         //PART 1 : GET INPUT
-
-
         inputData();
 
         //PART2 : Sort by Value/Weight
-        //sort **maybe can make with array.sort
-        sortData();
+        Arrays.sort(data, new Comparator<double[]>() {
+            @Override
+            public int compare(final double[] one, final double[] two) {
+                final double ratio1 = one[0];
+                final double ratio2 = two[0];
+                if(ratio1 < ratio2) {
+                    return 1;
+                } else if(ratio1 > ratio2) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
 
         //PART3 : Get Initial State from Greedy Algorighm.
         int greedy[] = greedy(data, numProduct, numKnapsack, maxWei);
