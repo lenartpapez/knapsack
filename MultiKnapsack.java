@@ -261,12 +261,10 @@ public class MultiKnapsack {
 
         for(int i = 0 ; i < numProduct; i++) {
             String knapsack = "";
-            if(greedy[i] == 1) {
-                knapsack = "in knapsack 2";
-            } else if(greedy[i] == -1) {
-                knapsack = "not in any knapsacks";
+            if(greedy[i] != -1) {
+                knapsack = String.format("in knapsack %d", greedy[i]+1);
             } else {
-                knapsack = "in knapsack 1";
+                knapsack = "not in any knapsacks";
             }
             System.out.printf("Item with price: %.0f and weight: %.0f is %s\n", data[i][1], data[i][2], knapsack);
         }
