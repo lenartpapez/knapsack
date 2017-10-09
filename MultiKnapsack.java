@@ -100,46 +100,52 @@ public class MultiKnapsack {
 
     public ArrayList<int[]> generateNeighbors(int[] vector) {
         ArrayList<int[]> neighbors = new ArrayList<>();
-        for(int i = 0; i < numProduct - 1; i++) {
-            for(int j = 0; j < numProduct; j++) {
+        for(int i = 0; i < numProduct; i++) {
+            for(int j = 1; j < numProduct; j++) {
                 int[] vcopy = new int[numProduct];
                 System.arraycopy(vector, 0, vcopy, 0, numProduct);
-                if(vcopy[i] == 0 && vcopy[j] == 1) {
-                    int temp = vcopy[i];
-                    vcopy[i] = vcopy[j];
-                    vcopy[j] = temp;
-                    if(!neighbors.contains(vcopy))
-                        neighbors.add(vcopy);
-                } else if(vcopy[i] == 1 && vcopy[j] == 0) {
-                    int temp = vcopy[i];
-                    vcopy[i] = vcopy[j];
-                    vcopy[j] = temp;
-                    if(!neighbors.contains(vcopy))
-                        neighbors.add(vcopy);
-                } else if(vcopy[i] == 1 && vcopy[j] == -1) {
-                    int temp = vcopy[i];
-                    vcopy[i] = vcopy[j];
-                    vcopy[j] = temp;
-                    if(!neighbors.contains(vcopy))
-                        neighbors.add(vcopy);
-                } else if(vcopy[i] == 0 && vcopy[j] == -1) {
-                    int temp = vcopy[i];
-                    vcopy[i] = vcopy[j];
-                    vcopy[j] = temp;
-                    if(!neighbors.contains(vcopy))
-                        neighbors.add(vcopy);
-                } else if(vcopy[i] == -1 && vcopy[j] == 0) {
-                    int temp = vcopy[i];
-                    vcopy[i] = vcopy[j];
-                    vcopy[j] = temp;
-                    if(!neighbors.contains(vcopy))
-                        neighbors.add(vcopy);
-                } else if(vcopy[i] == -1 && vcopy[j] == 1) {
-                    int temp = vcopy[i];
-                    vcopy[i] = vcopy[j];
-                    vcopy[j] = temp;
-                    if(!neighbors.contains(vcopy))
-                        neighbors.add(vcopy);
+                if(vcopy[i] == 0) {
+                    if(vcopy[j] == -1) {
+                        int temp = vcopy[i];
+                        vcopy[i] = vcopy[j];
+                        vcopy[j] = temp;
+                        if(!neighbors.contains(vcopy))
+                            neighbors.add(vcopy);
+                    } else {
+                        int temp = vcopy[i];
+                        vcopy[i] = 1;
+                        vcopy[j] = temp;
+                        if(!neighbors.contains(vcopy))
+                            neighbors.add(vcopy);
+                    }
+                } else if(vcopy[i] == 1) {
+                    if(vcopy[j] == -1) {
+                        int temp = vcopy[i];
+                        vcopy[i] = vcopy[j];
+                        vcopy[j] = temp;
+                        if(!neighbors.contains(vcopy))
+                            neighbors.add(vcopy);
+                    } else {
+                        int temp = vcopy[i];
+                        vcopy[i] = 0;
+                        vcopy[j] = temp;
+                        if(!neighbors.contains(vcopy))
+                            neighbors.add(vcopy);
+                    }
+                } else if(vcopy[i] == -1) {
+                    if(vcopy[j] == 0) {
+                        int temp = vcopy[i];
+                        vcopy[i] = vcopy[j];
+                        vcopy[j] = temp;
+                        if(!neighbors.contains(vcopy))
+                            neighbors.add(vcopy);
+                    } else {
+                        int temp = vcopy[i];
+                        vcopy[i] = 1;
+                        vcopy[j] = temp;
+                        if(!neighbors.contains(vcopy))
+                            neighbors.add(vcopy);
+                    }
                 }
             }
         }
@@ -182,6 +188,18 @@ public class MultiKnapsack {
         return false;
     }
 
+    public int[] shuffleKnapsacks(int[] maxWei) {
+        int knaps[] = new int[maxWei.length];
+        int j = numKnapsack - 1;
+        for(int i = 0; i < j; i++) {
+            int temp = maxWei[i];
+            knaps[i] = maxWei[j];
+            knaps[j] = temp;
+            j--;
+        }
+        return knaps;
+    }
+
 
     public void playMultiKnapsackGame(){
         //PART 1 : GET INPUT
@@ -206,7 +224,13 @@ public class MultiKnapsack {
         // initial state from greedy algorithm
 
         int greedy[] = greedy(data, numProduct, numKnapsack, maxWei);
+        int knaps[] = shuffleKnapsacks(maxWei);
+        int greedy2[] = greedy(data, numProduct, numKnapsack, knaps);
         endProfit = calculateProfit(greedy)[0];
+        if(calculateProfit(greedy2)[0] > calculateProfit(greedy)[0]) {
+            greedy = greedy2;
+            endProfit = calculateProfit(greedy)[0];
+        }
         System.out.println("\nProfits after just greedy: " + Arrays.toString(calculateProfit(greedy)));
         int firstKnapsackTotal = calculateProfit(greedy)[1];
         int secondKnapsackTotal = calculateProfit(greedy)[2];
