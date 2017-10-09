@@ -116,6 +116,30 @@ public class MultiKnapsack {
                     vcopy[j] = temp;
                     if(!neighbors.contains(vcopy))
                         neighbors.add(vcopy);
+                } else if(vcopy[i] == 1 && vcopy[j] == -1) {
+                    int temp = vcopy[i];
+                    vcopy[i] = vcopy[j];
+                    vcopy[j] = temp;
+                    if(!neighbors.contains(vcopy))
+                        neighbors.add(vcopy);
+                } else if(vcopy[i] == 0 && vcopy[j] == -1) {
+                    int temp = vcopy[i];
+                    vcopy[i] = vcopy[j];
+                    vcopy[j] = temp;
+                    if(!neighbors.contains(vcopy))
+                        neighbors.add(vcopy);
+                } else if(vcopy[i] == -1 && vcopy[j] == 0) {
+                    int temp = vcopy[i];
+                    vcopy[i] = vcopy[j];
+                    vcopy[j] = temp;
+                    if(!neighbors.contains(vcopy))
+                        neighbors.add(vcopy);
+                } else if(vcopy[i] == -1 && vcopy[j] == 1) {
+                    int temp = vcopy[i];
+                    vcopy[i] = vcopy[j];
+                    vcopy[j] = temp;
+                    if(!neighbors.contains(vcopy))
+                        neighbors.add(vcopy);
                 }
             }
         }
@@ -179,14 +203,16 @@ public class MultiKnapsack {
             }
         });
 
+        // initial state from greedy algorithm
 
-        //PART3 : Get Initial State from Greedy Algorighm.
         int greedy[] = greedy(data, numProduct, numKnapsack, maxWei);
         endProfit = calculateProfit(greedy)[0];
         System.out.println("\nProfits after just greedy: " + Arrays.toString(calculateProfit(greedy)));
         int firstKnapsackTotal = calculateProfit(greedy)[1];
         int secondKnapsackTotal = calculateProfit(greedy)[2];
         System.out.println();
+
+        // first improvement
         ArrayList<int[]> neighbors = generateNeighbors(greedy);
         for(int[] n : neighbors) {
             if(feasible(n, endProfit)) {
@@ -210,7 +236,35 @@ public class MultiKnapsack {
             }
         }
 
-        System.out.println("Final choice after neighborhood search: " + Arrays.toString(greedy) + "\n");
+        System.out.println("Profits after one improvement: " + Arrays.toString(calculateProfit(greedy)));
+
+        // second improvement
+        neighbors = generateNeighbors(greedy);
+        for(int[] n : neighbors) {
+            if(feasible(n, endProfit)) {
+                greedy = n;
+                endProfit = calculateProfit(n)[0];
+                firstKnapsackTotal = calculateProfit(greedy)[1];
+                secondKnapsackTotal = calculateProfit(greedy)[2];
+                for(int i = 0 ; i < numProduct; i++) {
+                    if(greedy[i] == -1) {
+                        if(firstKnapsackTotal + data[i][2] <= maxWei[0]) {
+                            firstKnapsackTotal += data[i][2];
+                            endProfit += data[i][1];
+                            greedy[i] = 0;
+                        } else if(secondKnapsackTotal + data[i][2] <= maxWei[1]) {
+                            secondKnapsackTotal += data[i][2];
+                            endProfit += data[i][1];
+                            greedy[i] = 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println("\nProfits after second improvement: " + Arrays.toString(calculateProfit(greedy)));
+        System.out.println();
+
         for(int i = 0 ; i < numProduct; i++) {
             String knapsack = "";
             if(greedy[i] == 1) {
