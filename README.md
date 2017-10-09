@@ -6,5 +6,7 @@ It is based on an example I found on an old PDF book about multi knapsack proble
 and the solution is the same as here! ---> 
 
 GREEDY RETURNS -> 320, 90, 130
+
 FIRST IMPROVEMENT RETURNS -> 345, 100, 145
+
 SECOND IMPROVEMENT RETURNS -> 350, 100, 150
