@@ -15,6 +15,7 @@ public class MultiKnapsack {
     Knapsack kn;
     int maxWei[], numProduct, numKnapsack;
     double[][] data;
+    int[] actualweights;
 
     public MultiKnapsack(){
         endProfit = 0;
@@ -24,6 +25,7 @@ public class MultiKnapsack {
         numProduct = 0;
         numKnapsack = 0;
         data = new double[100][3];
+        actualweights = new int[100];
 
     }
 
@@ -41,6 +43,7 @@ public class MultiKnapsack {
             System.out.printf("Capacity of knapsack %d: ", i+1);
             if(sc.hasNext()) {
                 maxWei[i] = Integer.parseInt(sc.next());
+                actualweights[i] = 0;
             }
         }
 
@@ -104,87 +107,45 @@ public class MultiKnapsack {
             for(int j = 1; j < numProduct; j++) {
                 int[] vcopy = new int[numProduct];
                 System.arraycopy(vector, 0, vcopy, 0, numProduct);
-                if(vcopy[i] == 0) {
-                    if(vcopy[j] == -1) {
-                        int temp = vcopy[i];
-                        vcopy[i] = vcopy[j];
-                        vcopy[j] = temp;
-                        if(!neighbors.contains(vcopy))
-                            neighbors.add(vcopy);
-                    } else {
-                        int temp = vcopy[i];
-                        vcopy[i] = 1;
-                        vcopy[j] = temp;
-                        if(!neighbors.contains(vcopy))
-                            neighbors.add(vcopy);
-                    }
-                } else if(vcopy[i] == 1) {
-                    if(vcopy[j] == -1) {
-                        int temp = vcopy[i];
-                        vcopy[i] = vcopy[j];
-                        vcopy[j] = temp;
-                        if(!neighbors.contains(vcopy))
-                            neighbors.add(vcopy);
-                    } else {
-                        int temp = vcopy[i];
-                        vcopy[i] = 0;
-                        vcopy[j] = temp;
-                        if(!neighbors.contains(vcopy))
-                            neighbors.add(vcopy);
-                    }
-                } else if(vcopy[i] == -1) {
-                    if(vcopy[j] == 0) {
-                        int temp = vcopy[i];
-                        vcopy[i] = vcopy[j];
-                        vcopy[j] = temp;
-                        if(!neighbors.contains(vcopy))
-                            neighbors.add(vcopy);
-                    } else {
-                        int temp = vcopy[i];
-                        vcopy[i] = 1;
-                        vcopy[j] = temp;
-                        if(!neighbors.contains(vcopy))
-                            neighbors.add(vcopy);
-                    }
-                }
+                int temp = vcopy[i];
+                vcopy[i] = vcopy[j];
+                vcopy[j] = temp;
+                if(!neighbors.contains(vcopy))
+                    neighbors.add(vcopy);
             }
         }
         return neighbors;
     }
 
     public int[] calculateProfit(int[] vector) {
-        int[] profits = new int[3];
+        int[] profits = new int[numKnapsack + 1];
         for(int i = 0 ; i < numProduct; i++) {
-            if(vector[i] == 0) {
+            if(vector[i] != -1) {
                 profits[0] += data[i][1];
-                profits[1] += data[i][2];
-            } else if(vector[i] == 1) {
-                profits[0] += data[i][1];
-                profits[2] += data[i][2];
+                profits[vector[i]+1] += data[i][2];
             }
         }
         return profits;
     }
 
 
-    public boolean feasible(int[] vector, int totalProfit) {
+    public boolean feasable(int[] vector, int totalProfit) {
+        for(int i = 0 ; i < numKnapsack; i++) {
+            actualweights[i] = 0;
+        }
         int profit = 0;
-        int firstKnapsackTotal = 0;
-        int secondKnapsackTotal = 0;
         for(int i = 0 ; i < numProduct; i++) {
-            if(vector[i] == 0) {
-                firstKnapsackTotal += data[i][2];
+            if(vector[i] != -1) {
+                actualweights[vector[i]] += data[i][2];
                 profit += data[i][1];
-            } else if(vector[i] == 1) {
-                secondKnapsackTotal += data[i][2];
-                profit += data[i][1];
-            } else {
-
             }
         }
 
-        if(firstKnapsackTotal <= maxWei[0] && secondKnapsackTotal <= maxWei[1] &&
-         profit >= totalProfit) return true;
+        for(int i = 0 ; i < numKnapsack; i++) {
+            if(actualweights[i] > maxWei[i]) return false;
+        }
+
+        if(profit >= totalProfit) return true;
         return false;
     }
 
@@ -225,35 +186,38 @@ public class MultiKnapsack {
 
         int greedy[] = greedy(data, numProduct, numKnapsack, maxWei);
         int knaps[] = shuffleKnapsacks(maxWei);
-        int greedy2[] = greedy(data, numProduct, numKnapsack, knaps);
         endProfit = calculateProfit(greedy)[0];
-        if(calculateProfit(greedy2)[0] > calculateProfit(greedy)[0]) {
-            greedy = greedy2;
-            endProfit = calculateProfit(greedy)[0];
+        int greedy2[] = greedy(data, numProduct, numKnapsack, knaps);
+        int weights[] = new int[numKnapsack];
+        for(int i = 0; i < weights.length; i++) {
+            weights[i] = calculateProfit(greedy)[i+1];
         }
-        System.out.println("\nProfits after just greedy: " + Arrays.toString(calculateProfit(greedy)));
-        int firstKnapsackTotal = calculateProfit(greedy)[1];
-        int secondKnapsackTotal = calculateProfit(greedy)[2];
         System.out.println();
 
         // first improvement
         ArrayList<int[]> neighbors = generateNeighbors(greedy);
-        for(int[] n : neighbors) {
-            if(feasible(n, endProfit)) {
+        ArrayList<int[]> neighbors2 = generateNeighbors(greedy2);
+        for(int i = 0; i < Math.min(neighbors.size(), neighbors2.size()); i++) {
+            int[] n = neighbors.get(i);
+            int[] n2 = neighbors2.get(i);
+            if(calculateProfit(n2)[0] > calculateProfit(n)[0]) {
+                greedy2 = n;
+                n = n2;
+            }
+            if(feasable(n, endProfit)) {
                 greedy = n;
                 endProfit = calculateProfit(n)[0];
-                firstKnapsackTotal = calculateProfit(greedy)[1];
-                secondKnapsackTotal = calculateProfit(greedy)[2];
-                for(int i = 0 ; i < numProduct; i++) {
-                    if(greedy[i] == -1) {
-                        if(firstKnapsackTotal + data[i][2] <= maxWei[0]) {
-                            firstKnapsackTotal += data[i][2];
-                            endProfit += data[i][1];
-                            greedy[i] = 0;
-                        } else if(secondKnapsackTotal + data[i][2] <= maxWei[1]) {
-                            secondKnapsackTotal += data[i][2];
-                            endProfit += data[i][1];
-                            greedy[i] = 1;
+                for(int j = 0; j < weights.length; j++) {
+                    weights[j] = calculateProfit(greedy)[j+1];
+                }
+                for(int j = 0 ; j < numProduct; j++) {
+                    if(greedy[j] == -1) {
+                        for(int k = 0; k < numKnapsack; k++) {
+                            if(weights[k] + data[j][2] <= maxWei[k]) {
+                                weights[k] += data[j][2];
+                                endProfit += data[j][1];
+                                greedy[j] = 0;
+                            }
                         }
                     }
                 }
@@ -264,22 +228,28 @@ public class MultiKnapsack {
 
         // second improvement
         neighbors = generateNeighbors(greedy);
-        for(int[] n : neighbors) {
-            if(feasible(n, endProfit)) {
+        neighbors2 = generateNeighbors(greedy2);
+        for(int i = 0; i < Math.min(neighbors.size(), neighbors2.size()); i++) {
+            int[] n = neighbors.get(i);
+            int[] n2 = neighbors2.get(i);
+            if(calculateProfit(n2)[0] > calculateProfit(n)[0]) {
+                greedy2 = n;
+                n = n2;
+            }
+            if(feasable(n, endProfit)) {
                 greedy = n;
                 endProfit = calculateProfit(n)[0];
-                firstKnapsackTotal = calculateProfit(greedy)[1];
-                secondKnapsackTotal = calculateProfit(greedy)[2];
-                for(int i = 0 ; i < numProduct; i++) {
-                    if(greedy[i] == -1) {
-                        if(firstKnapsackTotal + data[i][2] <= maxWei[0]) {
-                            firstKnapsackTotal += data[i][2];
-                            endProfit += data[i][1];
-                            greedy[i] = 0;
-                        } else if(secondKnapsackTotal + data[i][2] <= maxWei[1]) {
-                            secondKnapsackTotal += data[i][2];
-                            endProfit += data[i][1];
-                            greedy[i] = 1;
+                for(int j = 0; j < weights.length; j++) {
+                    weights[j] = calculateProfit(greedy)[j+1];
+                }
+                for(int j = 0 ; j < numProduct; j++) {
+                    if(greedy[j] == -1) {
+                        for(int k = 0; k < numKnapsack; k++) {
+                            if(weights[k] + data[j][2] <= maxWei[k]) {
+                                weights[k] += data[j][2];
+                                endProfit += data[j][1];
+                                greedy[j] = 0;
+                            }
                         }
                     }
                 }
@@ -301,7 +271,11 @@ public class MultiKnapsack {
             System.out.printf("Item with price: %.0f and weight: %.0f is %s\n", data[i][1], data[i][2], knapsack);
         }
         System.out.printf("\nTotal profit in knapsacks: %d\n", endProfit);
-        System.out.printf("First knapsack total weight: %d\n", firstKnapsackTotal);  
-        System.out.printf("Second knapsack total weight: %d\n", secondKnapsackTotal);
+        int k = 0;
+        for(int i : weights) {
+            System.out.printf("Knapsack %d weight: %d\n", k, i);
+            k++;
+        }
+       
     }
 }
