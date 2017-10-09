@@ -23,6 +23,73 @@ Item 9 price: 30
 Item 9 weight: 40
 
 Solution should be: 160 price and 90 weight in first, 160 price and 130 weight in second
-Total profit: 320
+Total profit after greedy: 320
 
 GREEDY WORKS!
+
+After neighborhood improvements it should be: 140 price and 100 weight in first, 205 price and 145 weight in second.
+Total profit after neigh: 345
+
+___________________________________
+
+Testcases: 1
+Items: 6
+Knapsacks: 2
+Capacity 1: 10
+Capacity 2: 4
+Item 1 price: 7
+Item 1 weight: 7
+Item 2 price: 2
+Item 2 weight: 10
+Item 3 price: 6
+Item 3 weight: 6
+Item 4 price: 4
+Item 4 weight: 7
+Item 5 price: 2
+Item 5 weight: 5
+Item 6 price: 10
+Item 6 weight: 4
+
+Solution should be: 7 price and 7 weight in first, 10 price and 4 weight in second
+Total profit after greedy: 17
+
+Item with price: 10 and weight: 4 is in knapsack 2
+Item with price: 7 and weight: 7 is in knapsack 1
+Item with price: 6 and weight: 6 is not in any knapsacks
+Item with price: 4 and weight: 7 is not in any knapsacks
+Item with price: 2 and weight: 6 is not in any knapsacks
+Item with price: 2 and weight: 10 is not in any knapsacks
+
+That is also MAXIMUM = OPTIMAL
+
+
+_________________________________
+
+
+Number of testcases (usually 1): 1
+Number of products: 5
+Number of knapsacks: 3
+Capacity of knapsack 1: 3
+Capacity of knapsack 2: 3
+Capacity of knapsack 3: 2
+Price of item 1: 8
+Weight of item 1: 3
+Price of item 2: 5
+Weight of item 2: 2
+Price of item 3: 4
+Weight of item 3: 2
+Price of item 4: 5
+Weight of item 4: 1
+Price of item 5: 3
+Weight of item 5: 3
+
+Solution should be: 10 price and 3 weight in first, 8 price and 3 weight in second and 4 price and 2 weight in third
+Total profit after greedy: 22
+
+Item with price: 5 and weight: 1 is in knapsack 1
+Item with price: 8 and weight: 3 is in knapsack 2
+Item with price: 5 and weight: 2 is in knapsack 1
+Item with price: 4 and weight: 2 is in knapsack 3
+Item with price: 3 and weight: 3 is not in any knapsacks
+
+That is also optimal!
