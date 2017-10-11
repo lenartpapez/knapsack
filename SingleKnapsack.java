@@ -20,21 +20,26 @@ public class SingleKnapsack {
         data = new double[100][3];
     }
     void inputData(){
+        System.out.printf("number of Products: ");
         if(sc.hasNext()) {
             numProduct = Integer.parseInt(sc.next());
         }
         //input maximum volume
+        System.out.printf("number of Maximum Weight: ");
         if(sc.hasNext()) {
             maxWei = Integer.parseInt(sc.next());
+
         }
         System.out.printf("numproduct : %d, maxVol: %d\n",numProduct, maxWei);
 
         //input weight and value
         for(int i = 0 ; i < numProduct; i++){
+            System.out.printf("product %d weight: ",i);
             if(sc.hasNext()) {
                 //weight
                 data[i][2] = Double.parseDouble(sc.next());
             }
+            System.out.printf("product %d weight: ",i);
             if(sc.hasNext()) {
                 //value
                 data[i][1] = Double.parseDouble(sc.next());
@@ -105,7 +110,26 @@ public class SingleKnapsack {
         }
         return current;
     }
-    public void playSingleKnapsackGame(){
+    public void playSingleGreedy(){
+        System.out.println("Single Knapsack Problem");
+
+        //PART 1 : GET INPUT
+        inputData();
+
+        //PART2 : Sort by Value/Weight
+        //sort **maybe can make with array.sort
+        sortData();
+
+        //PART3 : Get Initial State from Greedy Algorighm.
+        int result[] = greedy(data, numProduct, maxWei);
+
+        //PART4 : Result
+        System.out.println(Arrays.toString(result));
+        System.out.println(kn.calVal(data, numProduct, result));
+    }
+    public void playSingleNeighbor(){
+        System.out.println("Single Knapsack Problem");
+
         //PART 1 : GET INPUT
         inputData();
 
@@ -120,6 +144,7 @@ public class SingleKnapsack {
         int result[] = neighbor(data, numProduct, maxWei, greedy);
 
         //PART5 : Result
+        // System.out.println(Arrays.toString(greedy));
         System.out.println(Arrays.toString(result));
         System.out.println(kn.calVal(data, numProduct, result));
     }

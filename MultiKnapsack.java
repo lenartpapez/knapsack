@@ -218,6 +218,31 @@ public class MultiKnapsack {
             data[m] = temp;
         }
     }
+    public void playGreedyMultiKnapsackGame(){
+        //PART 1 : GET INPUT
+        inputData();
+
+        //PART2 : Sort by Value/Weight
+        Arrays.sort(data, new Comparator<double[]>() {
+            @Override
+            public int compare(final double[] one, final double[] two) {
+                final double ratio1 = one[0];
+                final double ratio2 = two[0];
+                if(ratio1 < ratio2) {
+                    return 1;
+                } else if(ratio1 > ratio2) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
+        //PART3 : first with greedy
+        int ret[] = greedy(data, numProduct, numKnapsack, maxWei);
+        int maxProfit = calculateProfit(ret)[0];
+        System.out.println("After Greedy: "+Arrays.toString(ret)+" "+maxProfit);
+    }
 
     public void playMultiKnapsackGame(){
         //PART 1 : GET INPUT
@@ -246,6 +271,7 @@ public class MultiKnapsack {
         int maxProfit = calculateProfit(ret)[0];
         System.out.println("After Greedy & Neighbor : "+Arrays.toString(ret)+" "+maxProfit);
 
+
         //PART4 : several times with shuffled data
         for(int i = 0 ; i < 10; i++){
             System.out.println("Shuffle ["+i+"]");
@@ -260,7 +286,7 @@ public class MultiKnapsack {
                 System.out.println("RET changed  : "+Arrays.toString(ret)+" "+maxProfit);
             }
         }
-        System.out.println("After 10 times of Shuffled Data : "+Arrays.toString(ret)+" "+maxProfit);
+        System.out.println("After 10 times of Shuffled Data : "+ Arrays.toString(ret)+" "+maxProfit);
 
 
         //** one with greedy2

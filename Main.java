@@ -16,8 +16,8 @@ public class Main {
 
         //play game "testcase" times.
         while(testcase-->0) {
-//            single.playSingleKnapsackGame();
-            multi.playMultiKnapsackGame();
+        //    single.playSingleKnapsackGame();
+            multi.playGreedyMultiKnapsackGame();
         }
     }
 }
