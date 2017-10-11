@@ -39,7 +39,7 @@ public class SingleKnapsack {
                 //weight
                 data[i][2] = Double.parseDouble(sc.next());
             }
-            System.out.printf("product %d weight: ",i);
+            System.out.printf("product %d value: ",i);
             if(sc.hasNext()) {
                 //value
                 data[i][1] = Double.parseDouble(sc.next());
